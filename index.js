@@ -19,15 +19,21 @@ app.get("/search", async (req, res) => {
   try {
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath: "/usr/bin/google-chrome", // Caminho para o Chrome instalado
+      executablePath: "/usr/bin/google-chrome",
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
-        "--lang=pt-BR", // Define o idioma do navegador como português
+        "--disable-dev-shm-usage",
+        "--lang=pt-BR",
       ],
+      protocolTimeout: 30000,
     });
 
     const page = await browser.newPage();
+    
+    // Configura timeouts da página
+    await page.setDefaultNavigationTimeout(60000);
+    await page.setDefaultTimeout(60000);
 
     // Configura o cabeçalho de idioma
     await page.setExtraHTTPHeaders({
@@ -69,8 +75,12 @@ app.get("/search", async (req, res) => {
       websites,
     });
   } catch (error) {
-    console.error("Erro ao realizar a pesquisa:", error);
-    return res.status(500).json({ error: "Erro ao realizar a pesquisa." });
+    console.error("Erro detalhado:", error);
+    return res.status(500).json({ 
+      error: "Erro ao realizar a pesquisa.",
+      details: error.message,
+      stack: error.stack 
+    });
   }
 });
 

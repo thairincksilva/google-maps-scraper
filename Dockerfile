@@ -38,5 +38,13 @@ RUN npm install
 # Expor a porta do servidor
 EXPOSE 3000
 
+# Adicionar configuração de memória compartilhada
+RUN mkdir -p /tmp/chrome && chmod -R 777 /tmp/chrome
+
+# Configurar variáveis de ambiente
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV CHROME_PATH=/usr/bin/google-chrome
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
 # Comando de inicialização
 CMD ["npm", "start"]
