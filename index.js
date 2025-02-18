@@ -84,6 +84,11 @@ app.get("/search", async (req, res) => {
   }
 });
 
+// Adicione esta rota de healthcheck
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // Inicializar o servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
